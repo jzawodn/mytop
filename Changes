@@ -1,0 +1,227 @@
+Version 1.6:
+
+  Released 1.6 on February 16th, 2007.
+
+  Added support for passwords with embedded spaces, thanks to patch
+  from Jeffrey Friedl. 
+
+Version 1.4:
+
+  Released 1.4 on August 3rd, 2003
+
+  Used junk query filter from Steven Roussey <sroussey@network54.com>
+
+  Added a -prompt option so that you don't need to put the password on
+  the command-line or in a script.  Patches from jon r. luini
+  <falcon@chime.com> and Sean Leach <sleach@wiggum.com>
+
+  Added -resolve support (convert ips to hostnames in thread view).
+  Patch from Yogish Baliga <baliga@yahoo-inc.com>
+
+  Used an excellent patch from Per Andreas Buer <perbu@linpro.no> to
+  tidy up the top display.  This includes showing most values in short
+  form, such as 10k rather than 10000.  It also fixed query cache hit
+  % calculation bugs.
+
+  Strip port numbbers from the IP addresses in thread view.
+
+  Added an "I" command to get at SHOW INNODB STATUS output.  Needs
+  work in a future release.
+
+  Added experimental support for reading some options from the [mytop]
+  section of my.cnf or .my.cnf.
+
+  Various other cleanup and fixes.
+
+Version 1.3:
+
+  Released 1.3 on April 17, 2003
+
+  Added a "c" command to switch between the thread view and "command
+  summary" view.  The command summary pulls the Com_* values from SHOW
+  STATUS and summarizes them.  The UI needs work and I welcome
+  feedback on how to improve it.
+
+  Fixed various bugs.  Added regex support for filters.  Added the
+  ability to [K]ill all threads owned by a particular user.  Fixed
+  query cache hit rate computation.
+
+  Use the value of Com_select rather than Questions to calculate the
+  Qcache ratio.  Only SELECT queries are candidates for the cache, so
+  this is far more accurate.
+
+VERSION 1.2:
+
+  Released 1.2 on October 27, 2002.
+
+  Better handle the MySQL server going off-line (shouldn't die with
+  illegal division by zero errors anymore).
+
+  Suggestion from Jeremy Tinley <jtinley@unirez.com>:
+
+    * Make the Host column large enough to handle IP addresses.
+      Slightly change other field widths to compensate.
+
+  Add query cache stats.  Formatting of the values should probably be
+  cleaned up more.
+
+VERSION 1.1:
+
+  Not released.
+
+  Updated the option handling as suggested by Paul DuBois
+  <paul@snake.net> so that --pass and --password both work.  Also
+  noted that OS X is supported.
+
+VERSION 1.0:
+
+  Released 1.0 on April 27, 2002.
+
+  Provided a fix for cases when we try remove the domain name from the
+  display even if it is actually an IP address.
+
+  Fixed a ton of formatting bugs and "use of uninitialized value"
+  errors.
+
+  Adjusted column widths and headings a bit to fit the common cases
+  that I usually see.
+
+  Added "Now/Sec" to the header, next to "Avg/Sec".  The former is the
+  "real-time" queries per second since the last mytop refresh, while
+  the later is the queries per second since the server was last reset.
+
+  Added the `o' key to toggle the sort order.
+
+  Changed the `h' key to `H' for toggling the header.
+
+  Added the `h' key to filter based on hostname.
+
+  Changed the "Query Info" column to "Query or State" because if there
+  is no query running (like when a slave is replicating off the master
+  and you're watching the master), it'll show the state in that
+  column.
+
+  The real-time queries/sec are computed using Time::HiRes if it is
+  available, making the numbers much more accurate.
+
+  Added the `e' key to EXPLAIN a query.  It works a lot like the `f'
+  key to get the full SQL of a query.  Also, if you're already looking
+  at the full SQL (having pressed `f'), you can hit `e' to get it
+  explained if you'd like.
+
+  The web site has moved to: http://jeremy.zawodny.com/mysql/mytop/
+
+  There is now a mailing list.  See the web site for details.  Or look
+  here to subscribe:
+
+    http://www.advanced-mysql.com/cgi-bin/mailman/listinfo/mytop
+
+  That's all.
+
+VERSION 0.9:
+
+  Set $0 to `mytop' to make it easier to spot and to keep some of the
+  command-line args out of view.
+
+  Remembered to include the README in the distribution.
+
+VERSION 0.8:
+
+  Added a "Queries Per Second" or qps mode. You can enter qps mode by
+  hitting the `m' key. In this mode, mytop will write out one integer
+  per second. The number written reflects the number of queries
+  executed by the server in the previous one second interval.
+
+  mytop is now distributed as a true Perl package. There's a normal
+  Makefile.PL, which means it can be installed via the standard
+  mantra:
+
+    perl Makefile.PL
+    make
+    make test
+    make install
+
+  This should make life a bit easier. It also means that you could
+  install it using the CPAN shell.
+
+VERSION 0.7:
+
+  Basic support for Windows. The screen clearing doesn't work (not
+  sure how to do that). But most everything else seems to be
+  functional there.
+
+VERSION 0.6:
+
+  Some minor code cleanup.
+
+VERSION 0.5:
+
+  Fixed some field widths to handle larger values.
+
+VERSION 0.4:
+
+  Added -P command-line argument (to specify a port number).
+
+  Fixes to make mytop output better on small terminals.
+
+  Added `i' hotkey to toggle the display of Idle (sleeping) threads.
+
+  Other minor updates.
+
+VERSION 0.3:
+
+  Updated documentation to reflect command-line arguments.
+
+  Added support for long and short command-line arguments.
+
+  Optional color support via Term::ANSIColor.
+
+  Added batch mode. In batch mode, mytop doesn't clear the screen and
+  only outputs data once. It's useful for running periodically and
+  capturing the data to a file. In batch mode, there is no limit to
+  the number of threads listed.
+
+  Fixed division by zero bug in key cache code.
+
+  Implemented the `r' keystroke to reset the status counters via a
+  FLUSH STATUS call.
+
+  If you resize your xterm, mytop now adapts somewhat well.
+
+  Implemented the `p' keystroke to pause the display.
+
+  Implemented the `h' keystroke to toggle the header.
+
+  Implemented the `k' keystroke to kill a thread.
+
+  Fixed various formatting bugs in not-so-rare cases.
+
+  Added more specific error messages from DBI on connect failure.
+
+
+VERSION 0.2:
+
+  Added support for non-standard port numbers. But DBD::mysql seems to
+  ignore it. Try and see if it works for you. Doesn't for me on two
+  platforms.
+
+  Fixed some spelling problems.
+
+  Suggestions from "Richard Ellerbrock" <richarde@eskom.co.za>:
+
+    * If no host is specified, assume localhost.
+
+    * If no user is specified, assume root.
+
+    * Allow C-c to break.
+
+    * Better error handling and reporting on connect.
+
+  Suggestions from "William R. Mattil" <wrm@newton.irngtx.tel.gte.com>:
+
+    * Allow blank password, by setting initial default to ''.
+
+
+VERSION 0.1:
+
+  None. Initial release.
