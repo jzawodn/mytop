@@ -1,6 +1,9 @@
 #!/usr/bin/perl -w
+
+eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
+    if 0; # not running under some shell
 #
-# $Id: mytop,v 1.53 2003/09/18 17:58:36 jzawodn Exp $
+# $Id: mytop,v 1.4 2009/01/21 01:42:10 jzawodn Exp $
 
 =pod
 
@@ -710,7 +713,7 @@ sub GetData()
     ##
     if ($config{header})
     {
-        my @recs = Hashes("show status");
+        my @recs = Hashes("SHOW GLOBAL STATUS");
 
         ## if the server died or we lost connectivity
         if (not @recs)
@@ -905,7 +908,7 @@ sub GetData()
     ##
 
     #my $sz = $width - 52;
-    my @sz   = (8, 9, 15, 10, 9, 6);
+    my @sz   = (9, 9, 15, 10, 9, 6);
     my $used = scalar(@sz) + Sum(@sz);
     my $free = $width - $used;
 
@@ -917,7 +920,7 @@ sub GetData()
     print RESET();
 
     ##      Id User Host DB
-    printf "%8s %9s %15s %10s %9s %6s %-${free}s\n",
+    printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
         '--','----','-------','--','----', '---', '----------';
 
     $lines_left -= 2;
@@ -1044,7 +1047,7 @@ sub GetData()
             print GREEN()  if $thread->{Command} eq 'Connect';
         }
 
-        printf "%8d %9.9s %15.15s %10.10s %9d %6.6s %-${free}.${free}s\n",
+        printf "%9d %9.9s %15.15s %10.10s %9d %6.6s %-${free}.${free}s\n",
             $thread->{Id}, $thread->{User}, $thread->{Host}, $thread->{db},
             $thread->{Time}, $thread->{Command}, $smInfo;
 
@@ -1126,7 +1129,7 @@ sub GetCmdSummary()
     }
 
     # Variable_name and Value pairs come back...
-    my @data = Hashes("SHOW STATUS LIKE 'Com_%'");
+    my @data = Hashes("SHOW GLOBAL STATUS LIKE 'Com_%'");
     my %cmd_data;
     my %cmd_delta;
     my %cmd_pct;
@@ -1216,7 +1219,7 @@ sub GetShowVariables()
 sub GetShowStatus()
 {
     Clear() unless $config{batchmode};
-    my @rows = Hashes("SHOW STATUS");
+    my @rows = Hashes("SHOW GLOBAL STATUS");
 
     printf "%32s  %10s %10s\n", 'Counter', 'Total', 'Change';
     printf "%32s  %10s %10s\n", '-------', '-----', '------';
@@ -1543,7 +1546,7 @@ pick up Term::ReadKey here:
 
 And you obviously need access to a MySQL server (version 3.22.x or
 3.23.x) with the necessary security to run the I<SHOW PROCESSLIST> and
-I<SHOW STATUS> commands.
+I<SHOW GLOBAL STATUS> commands.
 
 If you are a Windows user, using ActiveState's Perl, you can use PPM
 (the Perl Package Manager) to install the MySQL and Term::ReadKey
@@ -1599,7 +1602,7 @@ routinely use B<top> on Linux, FreeBSD, and Solaris. You are likely to
 notice features from each of them here.
 
 B<mytop> will connect to a MySQL server and periodically run the
-I<SHOW PROCESSLIST> and I<SHOW STATUS> commands and attempt to
+I<SHOW PROCESSLIST> and I<SHOW GLOBAL STATUS> commands and attempt to
 summarize the information from them in a useful format.
 
 =head2 The Display
@@ -1817,8 +1820,8 @@ Display help.
 
 =item B<c>
 
-Show "command counters" based on the Com_* values in SHOW STATUS.
-This is a new feature.  Feedback welcome.
+Show "command counters" based on the Com_* values in SHOW GLOBAL
+STATUS.  This is a new feature.  Feedback welcome.
 
 =item B<d>
 
