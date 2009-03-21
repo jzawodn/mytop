@@ -23,7 +23,7 @@ use DBI;
 use Getopt::Long;
 use Socket;
 
-$main::VERSION = "1.6";
+$main::VERSION = "1.7";
 
 $|=1;
 $0 = 'mytop';

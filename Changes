@@ -1,3 +1,11 @@
+Version 1.7:
+
+  Released 1.7 on March 21th, 2009.
+
+  Fixes for 64-bit thread ids and SHOW GLOBAL syntax in MySQL 5.
+
+  (Finally resurrected this while working at craigslist.org.)
+
 Version 1.6:
 
   Released 1.6 on February 16th, 2007.
