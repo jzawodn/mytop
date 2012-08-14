@@ -910,9 +910,15 @@ sub GetData()
 
     $lines_left -= 2;
 
+    my $maxid = 0;
+
     foreach my $thread (@data)
     {
         last if not $lines_left;
+
+        if ($maxid < $thread->{Id}) {
+            $maxid = $thread->{Id};
+        }
 
         ## Drop Domain Name, unless it looks like an IP address.  If
         ## it's an IP, we'll strip the port number because it's rarely
@@ -978,7 +984,7 @@ sub GetData()
 
     }
 
-    my @sz   = (9, 9, 15, 10, 9, 6);
+    my @sz   = (length($maxid), 9, 15, 10, 9, 6);
     my $used = scalar(@sz) + Sum(@sz);
     my $free = $width - $used;
 
