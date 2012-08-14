@@ -912,7 +912,7 @@ sub GetData()
 
     print BOLD();
 
-    printf "%8s %9s %15s %10s %9s %6s %-${free}s\n",
+    printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
         'Id','User','Host/IP','DB','Time', 'Cmd', 'Query or State';
 
     print RESET();
