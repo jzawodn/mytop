@@ -990,13 +990,13 @@ sub GetData()
 
     print BOLD();
 
-    printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
+    printf "%${maxid}s %9s %15s %10s %9s %6s %-${free}s\n",
         'Id','User','Host/IP','DB','Time', 'Cmd', 'Query or State';
 
     print RESET();
 
     ##      Id User Host DB
-    printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
+    printf "%${maxid}s %9s %15s %10s %9s %6s %-${free}s\n",
         '--','----','-------','--','----', '---', '----------';
 
     ## Sort by idle time (closest thing to CPU usage I can think of).
@@ -1053,7 +1053,7 @@ sub GetData()
             print GREEN()  if $thread->{Command} eq 'Connect';
         }
 
-        printf "%9d %9.9s %15.15s %10.10s %9d %6.6s %-${free}.${free}s\n",
+        printf "%${maxid}d %9.9s %15.15s %10.10s %9d %6.6s %-${free}.${free}s\n",
             $thread->{Id}, $thread->{User}, $thread->{Host}, $thread->{db},
             $thread->{Time}, $thread->{Command}, $smInfo;
 
