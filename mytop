@@ -2,8 +2,6 @@
 
 eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
     if 0; # not running under some shell
-#
-# $Id: mytop,v 1.4 2009/01/21 01:42:10 jzawodn Exp $
 
 =pod
 
