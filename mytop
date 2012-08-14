@@ -921,11 +921,10 @@ sub GetData()
     printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
         '--','----','-------','--','----', '---', '----------';
 
-    $lines_left -= 2;
-
     my $proc_cmd = "show full processlist";
-
     my @data = Hashes($proc_cmd);
+
+    $lines_left -= 2;
 
     foreach my $thread (@data)
     {
