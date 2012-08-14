@@ -154,7 +154,7 @@ GetOptions(
     "idle|i"              => \$config{idle},
     "resolve|r"           => \$config{resolve},
     "prompt!"             => \$config{prompt},
-    "long|!"              => \$config{long_nums},
+    "long!"               => \$config{long_nums},
     "mode|m=s"            => \$config{mode},
     "sort=s"              => \$config{sort},
 );
