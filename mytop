@@ -979,6 +979,7 @@ sub GetData()
     }
 
     my @sz   = (9, 9, 15, 10, 9, 6);
+    my $used = scalar(@sz) + Sum(@sz);
     my $free = $width - $used;
 
     print BOLD();
