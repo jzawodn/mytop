@@ -984,19 +984,20 @@ sub GetData()
 
     }
 
-    my @sz   = (length($maxid), 9, 15, 10, 9, 6);
+    my $id_size = length $maxid;
+    my @sz   = ($id_size, 9, 15, 10, 9, 6);
     my $used = scalar(@sz) + Sum(@sz);
     my $free = $width - $used;
 
     print BOLD();
 
-    printf "%${maxid}s %9s %15s %10s %9s %6s %-${free}s\n",
+    printf "%${id_size}s %9s %15s %10s %9s %6s %-${free}s\n",
         'Id','User','Host/IP','DB','Time', 'Cmd', 'Query or State';
 
     print RESET();
 
     ##      Id User Host DB
-    printf "%${maxid}s %9s %15s %10s %9s %6s %-${free}s\n",
+    printf "%${id_size}s %9s %15s %10s %9s %6s %-${free}s\n",
         '--','----','-------','--','----', '---', '----------';
 
     ## Sort by idle time (closest thing to CPU usage I can think of).
@@ -1053,7 +1054,7 @@ sub GetData()
             print GREEN()  if $thread->{Command} eq 'Connect';
         }
 
-        printf "%${maxid}d %9.9s %15.15s %10.10s %9d %6.6s %-${free}.${free}s\n",
+        printf "%${id_size}d %9.9s %15.15s %10.10s %9d %6.6s %-${free}.${free}s\n",
             $thread->{Id}, $thread->{User}, $thread->{Host}, $thread->{db},
             $thread->{Time}, $thread->{Command}, $smInfo;
 
