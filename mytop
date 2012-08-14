@@ -905,21 +905,6 @@ sub GetData()
     ## Threads
     ##
 
-    my @sz   = (9, 9, 15, 10, 9, 6);
-    my $used = scalar(@sz) + Sum(@sz);
-    my $free = $width - $used;
-
-    print BOLD();
-
-    printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
-        'Id','User','Host/IP','DB','Time', 'Cmd', 'Query or State';
-
-    print RESET();
-
-    ##      Id User Host DB
-    printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
-        '--','----','-------','--','----', '---', '----------';
-
     my $proc_cmd = "show full processlist";
     my @data = Hashes($proc_cmd);
 
@@ -992,6 +977,20 @@ sub GetData()
         $ucache{$thread->{Id}}  = $thread->{User};
 
     }
+
+    my @sz   = (9, 9, 15, 10, 9, 6);
+    my $free = $width - $used;
+
+    print BOLD();
+
+    printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
+        'Id','User','Host/IP','DB','Time', 'Cmd', 'Query or State';
+
+    print RESET();
+
+    ##      Id User Host DB
+    printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
+        '--','----','-------','--','----', '---', '----------';
 
     ## Sort by idle time (closest thing to CPU usage I can think of).
 
