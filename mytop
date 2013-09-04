@@ -127,7 +127,7 @@ if (-e $config)
 
             chomp;
 
-	    if (/(\S+)\s*=\s*(.*\S)/)
+	    if (/([^\s=]+)\s*=\s*(.*\S)/)
             {
                 $config{lc $1} = $2 if exists $config{lc $1};
             }
