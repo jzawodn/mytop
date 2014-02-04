@@ -2,8 +2,6 @@
 
 eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
     if 0; # not running under some shell
-#
-# $Id: mytop,v 1.4 2009/01/21 01:42:10 jzawodn Exp $
 
 =pod
 
@@ -907,31 +905,20 @@ sub GetData()
     ## Threads
     ##
 
-    #my $sz = $width - 52;
-    my @sz   = (9, 9, 15, 10, 9, 6);
-    my $used = scalar(@sz) + Sum(@sz);
-    my $free = $width - $used;
-
-    print BOLD();
-
-    printf "%8s %9s %15s %10s %9s %6s %-${free}s\n",
-        'Id','User','Host/IP','DB','Time', 'Cmd', 'Query or State';
-
-    print RESET();
-
-    ##      Id User Host DB
-    printf "%9s %9s %15s %10s %9s %6s %-${free}s\n",
-        '--','----','-------','--','----', '---', '----------';
+    my $proc_cmd = "show full processlist";
+    my @data = Hashes($proc_cmd);
 
     $lines_left -= 2;
 
-    my $proc_cmd = "show full processlist";
-
-    my @data = Hashes($proc_cmd);
+    my $maxid = 0;
 
     foreach my $thread (@data)
     {
         last if not $lines_left;
+
+        if ($maxid < $thread->{Id}) {
+            $maxid = $thread->{Id};
+        }
 
         ## Drop Domain Name, unless it looks like an IP address.  If
         ## it's an IP, we'll strip the port number because it's rarely
@@ -955,7 +942,11 @@ sub GetData()
         {
             $thread->{Host} =~ s/:\d+$//;
             my $host = gethostbyaddr(inet_aton($thread->{Host}), AF_INET);
-            $host =~ s/^([^.]+).*/$1/;
+            if (defined $host) {
+                $host =~ s/^([^.]+).*/$1/;
+            } else {
+                $host = $thread->{Host};
+            }
             $thread->{Host} = $host;
         }
 
@@ -992,6 +983,22 @@ sub GetData()
         $ucache{$thread->{Id}}  = $thread->{User};
 
     }
+
+    my $id_size = length $maxid;
+    my @sz   = ($id_size, 9, 15, 10, 9, 6);
+    my $used = scalar(@sz) + Sum(@sz);
+    my $free = $width - $used;
+
+    print BOLD();
+
+    printf "%${id_size}s %9s %15s %10s %9s %6s %-${free}s\n",
+        'Id','User','Host/IP','DB','Time', 'Cmd', 'Query or State';
+
+    print RESET();
+
+    ##      Id User Host DB
+    printf "%${id_size}s %9s %15s %10s %9s %6s %-${free}s\n",
+        '--','----','-------','--','----', '---', '----------';
 
     ## Sort by idle time (closest thing to CPU usage I can think of).
 
@@ -1047,7 +1054,7 @@ sub GetData()
             print GREEN()  if $thread->{Command} eq 'Connect';
         }
 
-        printf "%9d %9.9s %15.15s %10.10s %9d %6.6s %-${free}.${free}s\n",
+        printf "%${id_size}d %9.9s %15.15s %10.10s %9d %6.6s %-${free}.${free}s\n",
             $thread->{Id}, $thread->{User}, $thread->{Host}, $thread->{db},
             $thread->{Time}, $thread->{Command}, $smInfo;
 
