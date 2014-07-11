@@ -956,7 +956,11 @@ sub GetData()
             $thread->{Host} =~ s/:\d+$//;
             my $host = gethostbyaddr(inet_aton($thread->{Host}), AF_INET);
             $host =~ s/^([^.]+).*/$1/;
-            $thread->{Host} = $host;
+            if(defined $host)
+            {
+               $host =~ s/^([^.]+).*/$1/;
+               $thread->{Host} = $host;
+            }
         }
 
         ## Fix possible undefs
