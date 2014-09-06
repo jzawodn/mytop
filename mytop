@@ -153,7 +153,7 @@ GetOptions(
     "delay|s=i"           => \$config{delay},
     "batch|batchmode|b"   => \$config{batchmode},
     "header!"             => \$config{header},
-    "idle|i"              => \$config{idle},
+    "idle|i!"              => \$config{idle},
     "resolve|r"           => \$config{resolve},
     "prompt!"             => \$config{prompt},
     "long!"               => \$config{long_nums},
