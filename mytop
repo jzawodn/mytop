@@ -95,6 +95,7 @@ my %config = (
     resolve       => 1,
     socket        => '',
     sort          => 0,         # default or reverse sort ("s")
+    striptld      => 2,         # how many parts to strip?
     user          => 'root',
 );
 
@@ -159,6 +160,7 @@ GetOptions(
     "long!"               => \$config{long_nums},
     "mode|m=s"            => \$config{mode},
     "sort=s"              => \$config{sort},
+    "striptld=i"          => \$config{striptld},
 );
 
 ## User may have put the port with the host.
@@ -955,8 +957,12 @@ sub GetData()
         {
             $thread->{Host} =~ s/:\d+$//;
             my $host = gethostbyaddr(inet_aton($thread->{Host}), AF_INET);
-            $host =~ s/^([^.]+).*/$1/;
-            $thread->{Host} = $host;
+            if ($host) {
+                if ( index( $host, '.' ) && $config{striptld} ) {
+                    $host =~ s/\.[^.]+$// for 1 .. $config{striptld};
+                }
+                $thread->{Host} = $host;
+            }
         }
 
         ## Fix possible undefs
@@ -1769,6 +1775,11 @@ with hostnames but toggling this option.
 
 Default: noresolve
 
+=item B<-striptld> I<num.>
+
+Number of domain parts to be stripped off FDQN (default = 2)
+when host names resolving is enabled.
+
 =back
 
 Command-line arguments will always take precedence over config file
@@ -2055,6 +2066,10 @@ Supplied a patch that formed the basis for C<-resolve> support.
 
 Supplied an excellent patch to tidy up the top display.  This includes
 showing most values in short form, such as 10k rather than 10000.
+
+=item Marius Feraru <altblue@n0i.net>
+
+Support for partial domain stripping (--striptld=X).
 
 =back
 
