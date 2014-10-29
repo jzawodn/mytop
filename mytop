@@ -1729,7 +1729,7 @@ Default: none.
 
 =item B<-header> or B<-noheader>
 
-Sepcify if you want the header to display or not. You can toggle this
+Specify if you want the header to display or not. You can toggle this
 with the B<h> key while B<mytop> is running.
 
 Default: header.
