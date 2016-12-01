@@ -96,6 +96,9 @@ my %config = (
     socket        => '',
     sort          => 0,         # default or reverse sort ("s")
     user          => 'root',
+    ssl           => 0,
+    ca_file       => '',
+    ca_path       => '',
 );
 
 my %qcache = ();    ## The query cache--used for full query info support.
@@ -159,6 +162,9 @@ GetOptions(
     "long!"               => \$config{long_nums},
     "mode|m=s"            => \$config{mode},
     "sort=s"              => \$config{sort},
+    "ssl!"                => \$config{ssl},
+    "cafile=s"            => \$config{ca_file},
+    "capath=s"            => \$config{ca_path},
 );
 
 ## User may have put the port with the host.
@@ -212,7 +218,12 @@ my $dsn;
 
 ## Socket takes precedence.
 
-$dsn ="DBI:mysql:database=$config{db};mysql_read_default_group=mytop;";
+$dsn = "DBI:mysql:database=$config{db};mysql_read_default_group=mytop;";
+
+# Add ssl configuration if it is requested
+$dsn .= "mysql_ssl=$config{ssl};" if $config{ssl};
+$dsn .= "mysql_ssl_ca_file=$config{ca_file};" if $config{ca_file};
+$dsn .= "mysql_ssl_ca_path=$config{ca_path};" if $config{ca_path};
 
 if ($config{socket} and -S $config{socket})
 {
@@ -246,6 +257,9 @@ Cannot connect to MySQL server. Please check the:
   * hostname you specified "$config{host}" (default is "localhost")
   * port you specified "$config{port}" (default is 3306)
   * socket you specified "$config{socket}" (default is "")
+  * ssl you specified "$config{ssl}" (default is 0)
+  * ca path you specified "$config{ca_path}" (default is "")
+  * ca file you specified "$config{ca_file}" (default is "")
 
 The options my be specified on the command-line or in a ~/.mytop
 config file. See the manual (perldoc mytop) for details.
@@ -1687,12 +1701,28 @@ Password to use when logging in to the MySQL server. Default: none.
 
 Hostname of the MySQL server. The hostname may be followed by an
 option port number. Note that the port is specified separate from the
-host when using a config file. Default: ``localhost''.
+host when using a config file. NOTE: for ipv6 addresses you must specify
+the port. i.e ::1:3306. Default: ``localhost''.
 
 =item B<-port> or B<-P> port
 
 If you're running MySQL on a non-standard port, use this to specify
 the port number. Default: 3306.
+
+=item B<-ssl>
+
+Setting ssl to true enables the CLIENT_SSL flag in when connecting to the
+mysql database. Default: 0.
+
+=item B<-cafile>
+
+Full path to the CA certificate file so the mysql server certificate can be
+verified. Default: none.
+
+=item B<-capath>
+
+Path to directory containing the CA certificates so that the mysql server
+certificate can be verified. Default: none.
 
 =item B<-s> or B<-delay> seconds
 
@@ -1797,6 +1827,9 @@ described above.
   header=1
   color=1
   idle=1
+  ssl=1
+  capath=/etc/ssl/certs
+  cafile=/etc/ssl/certs/my_ca_cert.pem
 
 Using a config file will help to ensure that your database password
 isn't visible to users on the command-line. Just make sure that the
