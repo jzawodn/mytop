@@ -92,6 +92,7 @@ my %config = (
     prompt        => 0,
     pass          => '',
     port          => 3306,
+	replication   => 1,
     resolve       => 1,
     socket        => '',
     sort          => 0,         # default or reverse sort ("s")
@@ -154,6 +155,7 @@ GetOptions(
     "batch|batchmode|b"   => \$config{batchmode},
     "header!"             => \$config{header},
     "idle|i"              => \$config{idle},
+	"replication|a"       => \$config{replication},
     "resolve|r"           => \$config{resolve},
     "prompt!"             => \$config{prompt},
     "long!"               => \$config{long_nums},
@@ -487,6 +489,24 @@ while (1)
             $config{idle} = 1;
             $config{sort} = 0;
             print RED(), "-- idle (sleeping) processed unfiltered --", RESET();
+            sleep 1;
+        }
+    }
+
+    if ($key =~ /a/)
+    {
+        if ($config{replication})
+        {
+            $config{replication} = 0;
+            $config{sort} = 1;
+            print RED(), "-- replication (connect/system user) processed filtered --", RESET();
+            sleep 1;
+        }
+        else
+        {
+            $config{replication} = 1;
+            $config{sort} = 0;
+            print RED(), "-- replication (connect/system user) processed unfiltered --", RESET();
             sleep 1;
         }
     }
@@ -1011,6 +1031,12 @@ sub GetData()
         # Check to see if we can skip out.  We skip out if we know the
         # given line doesn't match.
 
+        next if (($thread->{Command} eq "Connect")
+                 and
+				 ($thread->{User} eq "system user")
+                 and
+                 (not $config{replication}));
+
         next if (($thread->{Command} eq "Sleep")
                  and
                  (not $config{idle}));
@@ -1399,6 +1425,7 @@ Help for mytop version $main::VERSION by Jeremy D. Zawodny <${YELLOW}Jeremy\@Zaw
 
   ? - display this screen
   # - toggle short/long numbers (not yet implemented)
+  a - toggle display of replication threads (sessions for 'system user' in status 'connecting')
   c - command summary view (based on Com_* counters)
   d - show only a specific database
   e - explain the query that a thread is running
@@ -1750,6 +1777,15 @@ that the longest running queries appear at the top of the list.
 
 Default: idle.
 
+=item B<-a> or B<-replication> or B<-noidle>
+
+Specify if you want replication threads to appear in the list. If
+replication threads are omitted, the default sorting order is reversed so
+that the longest running queries appear at the top of the list.
+Replication removes threads for 'system user' in status 'connecting' 
+
+Default: replication.
+
 =item B<-prompt> or B<-noprompt>
 
 Specify if you want to be prompted to type in your database password.
@@ -1848,6 +1884,12 @@ C<header=1> in your config file to set the default behavior.
 =item B<i>
 
 Toggle the display of idle (sleeping) threads. If sleeping threads are
+filtered, the default sorting order is reversed so that the longest
+running queries appear at the top of the list.
+
+=item B<a>
+
+Toggle the display of replication threads. If replication threads are
 filtered, the default sorting order is reversed so that the longest
 running queries appear at the top of the list.
 
