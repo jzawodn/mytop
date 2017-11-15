@@ -954,7 +954,8 @@ sub GetData()
         if ($is_ip and $config{resolve})
         {
             $thread->{Host} =~ s/:\d+$//;
-            my $host = gethostbyaddr(inet_aton($thread->{Host}), AF_INET);
+            # default host with digits => to prevent warnings on the screen
+            my $host = gethostbyaddr(inet_aton($thread->{Host}), AF_INET) // $thread->{Host};
             $host =~ s/^([^.]+).*/$1/;
             $thread->{Host} = $host;
         }
