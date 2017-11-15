@@ -955,7 +955,14 @@ sub GetData()
         {
             $thread->{Host} =~ s/:\d+$//;
             my $host = gethostbyaddr(inet_aton($thread->{Host}), AF_INET);
-            $host =~ s/^([^.]+).*/$1/;
+            if(defined $host) {
+                $host =~ s/^([^.]+).*/$1/;
+            }
+            else {
+                # undef will garbage the screen
+                # fallback to IP or empty string
+                $host = $thread->{Host} // '';
+            }
             $thread->{Host} = $host;
         }
 
